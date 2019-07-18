@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Get ID</title>
+
+<body>
+
+<form name="Sample_form" action="get_id.html">
+<input type="text" name="textbox">
+<input type="button" value="Play Video", onclick="get_id()">
+</form>
+
+    
+    <div id="player"></div>
+
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '360',
+          width: '640',
+          videoId: 'M7lc1UVf-VE',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+            }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      function onPlayerStateChange(event) {
+        var ytStatus = event.target.getPlayerState();
+        if (ytStatus == YT.PlayerState.ENDED) {
+          if(que.size() != 0){
+            var s = que.dequeue();
+            changeVideo(s);
+          }else{
+            stopVideo();
+          }
+        }
+      }
+
+      function stopVideo() {
+        player.stopVideo();
+      }
+
+      function changeVideo(id){
+        player.loadVideoById(id);
+      }
+
+  var que = new Queue();
+  function get_id(){
+    var s = Sample_form.textbox.value;
+    //changeVideo(s);
+    que.enqueue(s);
+    alert(que.toString());
+
+    var ytStatus = player.getPlayerState();
+    alert(ytStatus);
+    if(ytStatus == 0 || ytStatus == 5){
+      var id = que.dequeue();
+      changeVideo(id);
+    }
+    
+  }
+
+  //Queue
+
+  function Queue(){
+    this.__a = new Array();
+  }
+
+  Queue.prototype.enqueue = function(val){
+    this.__a.push(val);
+  }
+
+  Queue.prototype.dequeue = function(){
+    if(this.__a.length > 0){
+      return this.__a.shift();
+    }
+    return null;
+  }
+
+  Queue.prototype.size = function(){
+    return this.__a.length;
+  }
+
+  Queue.prototype.toString = function(){
+    return '[' + this.__a.join(',') + ']';
+  }
+
+    </script>
+</body>
+</html>
